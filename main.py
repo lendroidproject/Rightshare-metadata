@@ -44,12 +44,44 @@ def _compose_image(nft_image_src, bg_path, frame_path, token_address, token_id, 
     #Bg image
     bg_composite = Image.open(bg_path)
     #Draw text
-    expiry_datetime = datetime.utcfromtimestamp(expiry)
-    expiry_readable = expiry_datetime.strftime("%d %b %y, %H:%M UTC")
 
+    dynamic_text_line_1 = ""
+    dynamic_text_line_2 = ""
+
+    #First Line - x-55 & y-279
     draw = ImageDraw.Draw(bg_composite)
     font = ImageFont.load_default()
-    draw.text((53, 300),expiry_readable,(0,0,0),font=font)
+
+    if token_type is 'f':
+        dynamic_text_line_1 = "Hodl while cool things happen."
+        dynamic_text_line_2 = "Unfreeze on"
+        draw.text((45, 279),dynamic_text_line_1,(0,0,0),font=font)
+            #Second Line - x-87 & y-292
+
+
+    elif token_type is 'i':
+        if max_i_supply == 1:
+            dynamic_text_line_1 = "Buidl with someone you love."
+            dynamic_text_line_2 = "You have until"
+            draw.text((50, 279),dynamic_text_line_1,(0,0,0),font=font)
+        else:
+            dynamic_text_line_1 = "Buidl something you love."
+            dynamic_text_line_2 = "You have until"
+            draw.text((60, 279),dynamic_text_line_1,(0,0,0),font=font)
+
+    draw.text((95, 292),dynamic_text_line_2,(0,0,0),font=font)
+
+
+    #Date & Time - x-53 & y-304
+    expiry_datetime = datetime.utcfromtimestamp(expiry)
+    expiry_readable = expiry_datetime.strftime("%d %b %y, %H:%M UTC")
+    draw = ImageDraw.Draw(bg_composite)
+    font = ImageFont.load_default()
+    draw.text((70, 304),expiry_readable,(0,0,0),font=font)
+
+
+
+
     #NFT image
     NFTImage = Image.open(requests.get(nft_image_src, stream=True).raw).convert("RGBA").resize((196,196))
     bg_composite.paste(NFTImage, (30, 30), NFTImage)
@@ -77,9 +109,9 @@ def nft(token_address, token_id, token_type, expiry, exclusivity, max_i_supply, 
 
     parent_nft_dapp_name = "Cryptovoxels"
     asset_name = "Parcel"
-    attributes = [{"trait_type": "Related App","value": "Cryptovoxels"},
+    attributes = [{"trait_type": "Base NFT issuer","value": "Cryptovoxels"},
        {"trait_type": "Asset Name","value": "Parcel"},
-       {"trait_type": "Maximum iToken supply","value": max_i_supply},
+       {"trait_type": "Maximum iRights supply","value": max_i_supply},
        ]
 
 
@@ -107,31 +139,40 @@ def nft(token_address, token_id, token_type, expiry, exclusivity, max_i_supply, 
     base = ""
     expired = datetime.timestamp(datetime.now()) > expiry
 
+    dynamic_text_line_1 = ""
+    dynamic_text_line_2 = ""
+
+
     description = ""
     if token_type == 'f':
         base = 'frozen'
-        name += "Unlock "
+        name += "fRights of "
         name += parent_nft_data['name']
-        description += "Rights to unfreeze the NFT of %s %s %s after %s." % (parent_nft_dapp_name,asset_name,parent_nft_data['name'],expiry_readable)
-        attributes.append({"trait_type": "Token type","value": "Unfreeze rights"})
-        attributes.append({"trait_type": "Circulating iToken supply","value": serial})
+        description += "Hodl while cool things happen. You can unfreeze the %s %s %s after %s or immediately if the circulating supply of valid iRights for the asset is 0" % (parent_nft_dapp_name,asset_name,parent_nft_data['name'],expiry_readable)
+        attributes.append({"trait_type": "Token type","value": "fRights"})
+        attributes.append({"trait_type": "Circulating iRights supply","value": serial})
         attributes.append({"trait_type": "Frozen until","value": expiry,"display_type": "date"})
+
 
     elif token_type == 'i':
         base = 'access'
-        name += "Access to "
+        name += "iRights of "
         name += parent_nft_data['name']
-        description += "Access to the %s %s %s until %s." % (parent_nft_dapp_name,asset_name,parent_nft_data['name'],expiry_readable)
         attributes.append({"trait_type": "Serial","value": serial})
         attributes.append({"trait_type": "Access until","value": expiry,"display_type": "date"})
         if not expired:
             allow_access = True
         if max_i_supply == 1:
             base = 'exclusive'
-            attributes.append({"trait_type": "Token type","value": "exclusive access rights"})
+            description += "Buidl something you love. You have exclusive interim rights to the %s %s %s until %s." % (parent_nft_dapp_name,asset_name,parent_nft_data['name'],expiry_readable)
+            attributes.append({"trait_type": "Token type","value": "iRights"})
+            attributes.append({"trait_type": "Ingress","value": "exclusive"})
+
         else:
             base = 'non-exclusive'
-            attributes.append({"trait_type": "Token type","value": "non-exclusive access rights"})
+            attributes.append({"trait_type": "Token type","value": "iRights"})
+            attributes.append({"trait_type": "Ingress","value": "non-exclusive"})
+            description += "Buidl with someone you love. You have non-exclusive interim rights to the %s %s %s until %s." % (parent_nft_dapp_name,asset_name,parent_nft_data['name'],expiry_readable)
 
     else:
         raise
