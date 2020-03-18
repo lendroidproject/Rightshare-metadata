@@ -31,6 +31,8 @@ api = Api(app)
 
 GOOGLE_STORAGE_PROJECT = settings.get("GOOGLE_STORAGE_PROJECT", None)
 GOOGLE_STORAGE_BUCKET = settings.get("GOOGLE_STORAGE_BUCKET", None)
+# OPENSEA_API_URL = "https://api.opensea.io/api/v1/asset"
+OPENSEA_API_URL = "https://rinkeby-api.opensea.io/api/v1/asset"
 
 def _get_bucket():
     credentials = service_account.Credentials.from_service_account_file('credentials/google-storage-credentials.json')
@@ -116,7 +118,7 @@ def nft(token_address, token_id, token_type, expiry, exclusivity, max_i_supply, 
 
 
 
-    parent_nft_data = requests.get('https://api.opensea.io/api/v1/asset/{0}/{1}/'.format(token_address, token_id)).json()
+    parent_nft_data = requests.get('{0}/{1}/{2}/'.format(OPENSEA_API_URL, token_address, token_id)).json()
 
     nft_url = parent_nft_data['image_url']
 
