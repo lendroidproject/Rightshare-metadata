@@ -6,3 +6,4 @@ lib/
 credentials/
 images/nft/
 images/output/
+*.DS_Store
