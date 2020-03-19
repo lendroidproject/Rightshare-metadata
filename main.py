@@ -96,7 +96,10 @@ def _compose_image(nft_image_src, bg_path, frame_path, token_address, token_id, 
         foreground = Image.open("images/bases/flag-expired.png").resize(bg_composite.size)
         composite = Image.alpha_composite(composite, foreground)
     #save output to cloud
-    output_path = "images/output/%s-%s-%s-%s-%s-%s-%s-%s.png" % (token_address, token_id, token_type, expiry, exclusivity, max_i_supply, serial, expired)
+    # wd = os.path.dirname(os.path.realpath(__file__))
+    # file_path = "tmp/%s-%s-%s-%s-%s-%s-%s-%s.png" % (token_address, token_id, token_type, expiry, exclusivity, max_i_supply, serial, expired)
+    # output_path = os.path.join(wd, file_path)
+    output_path = "/tmp/%s-%s-%s-%s-%s-%s-%s-%s.png" % (token_address, token_id, token_type, expiry, exclusivity, max_i_supply, serial, expired)
     composite.save(output_path)
 
     blob = _get_bucket().blob(f"{path}/{token_address}-{token_id}-{token_type}-{expiry}-{exclusivity}-{max_i_supply}-{serial}-{expired}.png")
