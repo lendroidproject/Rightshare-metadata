@@ -1,5 +1,5 @@
-# nft-metadata-api
-Python API server for LeaseNFT Metadata
+# rightshare-metadata-api
+Python API server to render images of Rightshare NFTs from on-chain metadata
 
 ## Framework
 
@@ -13,7 +13,7 @@ This project is written using the [Google App Engine](https://cloud.google.com/a
 
 * cd into the cloned repo
 
-  `cd nft-metadata-api`
+  `cd Rightshare-metadata`
 
 * Install Python and dependencies
 
@@ -28,11 +28,11 @@ This project is written using the [Google App Engine](https://cloud.google.com/a
 
   * Create a virtual environment
 
-    `virtualenv -p python3.7 --no-site-packages ~/nft-metadata-api-venv`
+    `virtualenv -p python3.7 --no-site-packages ~/rightshare-metadata-api-venv`
 
   * Activate the virtual environment
 
-    `source ~/nft-metadata-api-venv/bin/activate`
+    `source ~/rightshare-metadata-api-venv/bin/activate`
 
   * Install dependencies from requirements.txt via pip
 
